@@ -1,0 +1,93 @@
+/*bootstrap fix*/
+html,
+body {
+  overflow-x: hidden;
+  background-color: #fafafa;
+}
+
+header {
+  margin-bottom: 0 !important;
+  background-color: #fff;
+}
+
+nav {
+  padding-left: 5%;
+  padding-right: 5%;
+}
+
+hr {
+  margin: 0 !important;
+}
+
+a {
+  text-decoration: none;
+}
+
+header {
+  background-color: #fff;
+}
+
+footer {
+  background-color: #fff;
+  padding: 5%;
+}
+
+main {
+  min-height: 70vh;
+  background-color: #fafafa;
+  margin-left: 3%;
+  margin-right: 3%;
+}
+
+.myBorder {
+  /* Instagram border */
+  border: 1px solid rgba(var(--b6a, 219, 219, 219), 1) !important;
+}
+
+.myForm {
+  padding: 5%;
+  background-color: #fff;
+  margin-top: 5%;
+}
+.myHeading {
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.loginComponent {
+  margin-top: 7%;
+  margin-bottom: 30px;
+  border: 2px solid #fafafa;
+  padding: 10%;
+  background-color: #fff;
+}
+
+.LoginWholeComponent {
+  margin: 5% 1% 9% 1%;
+}
+
+.loginSubComponent {
+  padding: 3% 5% 3% 5%;
+  background-color: #fff;
+  margin: 1% 0% 20% 0%;
+}
+
+.form-group {
+  margin-top: 7%;
+  margin-bottom: 7%;
+}
+
+.btn-full-width {
+  width: 100%;
+}
+
+.error-message {
+  color: red;
+}
+.success-message {
+  color: green;
+}
+.class-crud-buttons-div {
+  padding-top: 2%;
+  padding-bottom: 2%;
+}
