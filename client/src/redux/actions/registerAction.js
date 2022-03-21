@@ -93,7 +93,9 @@ const registerAction = (form_data) => {
       .catch(async (error) => {
         await dispatch({
           type: REGISTER_FAILED,
-          payload: error,
+          payload: {
+            error_message: error.message,
+          },
         });
       });
   };

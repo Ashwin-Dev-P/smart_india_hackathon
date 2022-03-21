@@ -85,7 +85,7 @@ const loginAction = (form_data) => {
 
         await dispatch({
           type: LOGIN_FAILED,
-          payload: error,
+          payload: error.message,
         });
       });
   };
