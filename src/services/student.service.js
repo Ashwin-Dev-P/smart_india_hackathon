@@ -187,14 +187,36 @@ const markStudentAttendanceForDateService = async (
     return result;
   }
 
+  //get all students from that class and check if the attendance has been removed or added(i.e getting attendance details before updating)
+  var pre_update_students_list =
+    await student_repository.getStudentsOfClassByDate(class_id, date);
+
+  //Get only students who need to be marked absent or who are already set to absent
+  pre_update_students_list = pre_update_students_list.filter(
+    (student) => !student_ids.some((id) => id === student._id.toString())
+  );
+
+  console.info("Students who needs to be marked present", student_ids.length);
   try {
-    //mark attendance for each student
+    //mark attendance to present for each student sent from client, if the id is not present in pre update students list, then remove that date
     for (var index = 0; index < student_ids.length; index++) {
       const student_id = student_ids[index];
+
       await student_repository.addStudentPresentDateRepository(
         student_id,
         date
       );
+    }
+
+    //remove attendance for students whose name is set to absent(i.e not present in student_ids array)
+    for (var index = 0; index < pre_update_students_list.length; index++) {
+      const student_id = pre_update_students_list[index]._id.toString();
+      if (!student_ids.includes(student_id)) {
+        await student_repository.markAbsentForStudentRepository(
+          student_id,
+          date
+        );
+      }
     }
 
     result = {

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link, Navigate } from "react-router-dom";
+import ReCAPTCHA from "react-google-recaptcha";
 
 //import components
 import MyButton from "../shared/MyButton";
@@ -10,21 +11,41 @@ import { connect } from "react-redux";
 
 //actions
 import registerAction from "../../redux/actions/registerAction";
+import recaptchaSelectedAction from "../../redux/actions/recaptcha/recaptchaSelected.action";
+import clearRecaptchaAction from "../../redux/actions/recaptcha/clearRecaptcha.action";
+
+const sitekey =
+  process.env.REACT_APP_RECAPTCHA_SITE_KEY ||
+  process.env.REACT_APP_RECAPTCHA_SITE_TEST_KEY;
 
 const mapDispatchToProps = (dispatch) => ({
   registerAction: (form_data) => {
     dispatch(registerAction(form_data));
   },
+  recaptchaSelectedAction: (token) => {
+    dispatch(recaptchaSelectedAction(token));
+  },
+
+  clearRecaptchaAction: () => {
+    dispatch(clearRecaptchaAction());
+  },
 });
 
 class index extends Component {
   constructor(props) {
-    console.log("ys");
     super(props);
     this.registerHandler = this.registerHandler.bind(this);
+    this.onRecaptchaChange = this.onRecaptchaChange.bind(this);
   }
+
+  componentWillUnmount() {
+    this.props.clearRecaptchaAction();
+  }
+
   registerHandler(e) {
     e.preventDefault();
+
+    const reCAPTCHA_token = this.props.reCAPTCHA.token;
 
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
@@ -40,9 +61,16 @@ class index extends Component {
       password_confirmation,
       first_name,
       last_name,
+      reCAPTCHA_token,
     };
     console.log(form_data);
     this.props.registerAction(form_data);
+  }
+
+  onRecaptchaChange(token) {
+    if (token) {
+      this.props.recaptchaSelectedAction(token);
+    }
   }
 
   render() {
@@ -122,11 +150,21 @@ class index extends Component {
                   />
                 </div>
 
+                <div className="form-group text-center">
+                  <ReCAPTCHA
+                    sitekey={sitekey}
+                    onChange={this.onRecaptchaChange}
+                    className="btn-full-width"
+                    size="normal"
+                  />
+                </div>
+
                 <div className="form-group">
                   <MyButton
                     className="btn btn-primary btn-full-width"
                     text="register"
                     type="submit"
+                    disabled={!this.props.reCAPTCHA.recaptcha_verified}
                   />
                 </div>
 
@@ -152,6 +190,7 @@ const mapStateToProps = (state) => {
   return {
     register: state.registerReducer,
     loggedIn: state.logoutReducer.loggedIn,
+    reCAPTCHA: state.reCAPTCHA,
   };
 };
 

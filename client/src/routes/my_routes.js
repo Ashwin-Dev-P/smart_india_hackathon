@@ -18,6 +18,10 @@ import ClassRoomComponent from "../components/classes/class/index";
 import AddStudent from "../components/classes/class/AddStudent";
 import Attendance from "../components/classes/class/Attendance";
 
+//weekly attendance
+import WeeklyAttendance from "../components/attendance/WeeklyAttendance";
+import BarChart from "../components/attendance/AttendanceCharts/BarChart";
+
 export default class MyRoutes extends Component {
   render() {
     return (
@@ -54,6 +58,18 @@ export default class MyRoutes extends Component {
 
           <Route
             exact
+            path="/attendance/class/:class_id/weekly"
+            element={<PrivateRoute />}
+          >
+            <Route
+              exact
+              path="/attendance/class/:class_id/weekly"
+              element={<WeeklyAttendance />}
+            />
+          </Route>
+
+          <Route
+            exact
             path="/add_student/class/:class_id"
             element={<PrivateRoute />}
           >
@@ -68,6 +84,17 @@ export default class MyRoutes extends Component {
             <Route exact path="/add_class" element={<AddClass />} />
           </Route>
 
+          <Route
+            exact
+            path="/attendance/class/:class_id/bar_chart"
+            element={<PrivateRoute />}
+          >
+            <Route
+              exact
+              path="/attendance/class/:class_id/bar_chart"
+              element={<BarChart />}
+            />
+          </Route>
           {/* Private route ends here */}
 
           {/*  resticted route*/}

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 //import redux
@@ -29,27 +29,25 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-function myGetDate() {
-  const today = new Date();
-  const yyyy = today.getFullYear();
-  let mm = today.getMonth() + 1; // Months start at 0!
-  let dd = today.getDate();
+function getTimeStampStartOfDay(date) {
+  var now;
+  if (!date) {
+    now = new Date();
+  } else {
+    now = new Date(date);
+  }
 
-  if (dd < 10) dd = "0" + dd;
-  if (mm < 10) mm = "0" + mm;
-
-  const currentDate = dd + "/" + mm + "/" + yyyy;
-  return currentDate;
-}
-
-function getTimeStampStartOfDay() {
-  var now = new Date();
   var startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   var timestamp = startOfDay / 1000;
   return timestamp;
 }
 
 function Attendance(props) {
+  var defaultSelectedDateTimeStamp = getTimeStampStartOfDay();
+
+  const [selectedDateTimeStamp, setSelectedDateTimeStamp] = useState(
+    defaultSelectedDateTimeStamp
+  );
   const { class_id } = useParams();
 
   const getStudentsAction = props.getStudentsAction;
@@ -86,10 +84,20 @@ function Attendance(props) {
     const form_data = {
       student_ids: student_ids,
       class_id: class_id,
-      date: getTimeStampStartOfDay(),
+      date: selectedDateTimeStamp || getTimeStampStartOfDay(),
     };
 
     props.markAttendanceAction(form_data);
+  };
+
+  //Set date
+  const selectDateFormSubmitHandler = async (e) => {
+    e.preventDefault();
+    const selected_date = document.getElementById("date").value;
+
+    defaultSelectedDateTimeStamp = getTimeStampStartOfDay(selected_date);
+
+    setSelectedDateTimeStamp(defaultSelectedDateTimeStamp);
   };
 
   if (props.getStudents && props.getStudents.status) {
@@ -103,13 +111,15 @@ function Attendance(props) {
     props.markAttendance.status.error_message;
   const mark_attendance_message = props.markAttendance.status.message;
 
-  const currentDate = myGetDate();
+  //const currentDate = MyGetCurrentDate();
   return (
     <div>
       <h2 className="myHeading">Attendance</h2>
       <div>
-        <div className="text-center">{currentDate}</div>
-
+        {/*<div className="text-center">{currentDate}</div>*/}
+        <div className="text-center">
+          <input type="date" id="date" onChange={selectDateFormSubmitHandler} />
+        </div>
         <div>
           {loading === true ? (
             <div className="text-center">
@@ -141,6 +151,7 @@ function Attendance(props) {
                                 <StudentAttendanceListItem
                                   key={student._id}
                                   student={student}
+                                  current_date_timestamp={selectedDateTimeStamp}
                                 />
                               ))}
                             </ul>

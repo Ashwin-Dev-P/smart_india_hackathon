@@ -1,19 +1,33 @@
 import React, { Component } from "react";
 import { Link, Navigate } from "react-router-dom";
+import ReCAPTCHA from "react-google-recaptcha";
 
 //import redux
 import { connect } from "react-redux";
 
 //actions
 import loginAction from "../../redux/actions/loginAction";
+import recaptchaSelectedAction from "../../redux/actions/recaptcha/recaptchaSelected.action";
+import clearRecaptchaAction from "../../redux/actions/recaptcha/clearRecaptcha.action";
 
 //import components
 import MyButton from "../shared/MyButton";
 import Loading from "../shared/Loading";
 
+const sitekey =
+  process.env.REACT_APP_RECAPTCHA_SITE_KEY ||
+  process.env.REACT_APP_RECAPTCHA_SITE_TEST_KEY;
+
 const mapDispatchToProps = (dispatch) => ({
   loginAction: (form_data) => {
     dispatch(loginAction(form_data));
+  },
+  recaptchaSelectedAction: (token) => {
+    dispatch(recaptchaSelectedAction(token));
+  },
+
+  clearRecaptchaAction: () => {
+    dispatch(clearRecaptchaAction());
   },
 });
 
@@ -22,9 +36,17 @@ class index extends Component {
     super(props);
 
     this.loginHandler = this.loginHandler.bind(this);
+    this.onRecaptchaChange = this.onRecaptchaChange.bind(this);
   }
+
+  componentWillUnmount() {
+    this.props.clearRecaptchaAction();
+  }
+
   loginHandler(e) {
     e.preventDefault();
+
+    const reCAPTCHA_token = this.props.reCAPTCHA.token;
 
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
@@ -32,12 +54,19 @@ class index extends Component {
     const form_data = {
       email,
       password,
+      reCAPTCHA_token,
     };
 
     this.props.loginAction(form_data);
   }
 
-  render(state) {
+  onRecaptchaChange(token) {
+    if (token) {
+      this.props.recaptchaSelectedAction(token);
+    }
+  }
+
+  render() {
     if (this.props.loggedIn === true) {
       <Navigate to="/classes" />;
     }
@@ -55,7 +84,7 @@ class index extends Component {
           <div className="col-xs-12 col-md-3 col-lg-4"></div>
           <div className="col-xs-12 col-md-6 col-lg-4">
             <div className=" myBorder loginComponent">
-              <form className="" onSubmit={this.loginHandler}>
+              <form onSubmit={this.loginHandler}>
                 <h2 className="myHeading">Login</h2>
                 <div className="form-group">
                   <input
@@ -78,11 +107,20 @@ class index extends Component {
                     required
                   />
                 </div>
+                <div className="form-group text-center">
+                  <ReCAPTCHA
+                    sitekey={sitekey}
+                    onChange={this.onRecaptchaChange}
+                    className="btn-full-width"
+                    size="normal"
+                  />
+                </div>
                 <div className="form-group">
                   <MyButton
                     className="btn btn-primary btn-full-width"
                     text="login"
                     type="submit"
+                    disabled={!this.props.reCAPTCHA.recaptcha_verified}
                   />
                 </div>
 
@@ -109,6 +147,7 @@ const mapStateToProps = (state) => {
   return {
     login_details: state.loginReducer,
     loggedIn: state.logoutReducer.loggedIn,
+    reCAPTCHA: state.reCAPTCHA,
   };
 };
 

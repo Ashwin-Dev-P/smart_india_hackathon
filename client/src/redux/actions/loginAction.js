@@ -22,6 +22,15 @@ const loginAction = (form_data) => {
       type: LOGIN_LOADING,
     });
 
+    const reCAPTCHA_token = form_data.reCAPTCHA_token;
+    if (!reCAPTCHA_token) {
+      await dispatch({
+        type: LOGIN_FAILED,
+        payload: "Please select the reCAPTCHA",
+      });
+      return;
+    }
+
     const url = backend_url + "/api/user/login";
 
     const headers = {

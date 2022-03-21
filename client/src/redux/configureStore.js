@@ -15,6 +15,7 @@ import addClassReducer from "./reducers/classes/addClass.reducer";
 import addStudentReducer from "./reducers/classes/class/addStudent.reducer";
 import getStudentsReducer from "./reducers/classes/class/getStudents.reducer";
 import markAttendanceReducer from "./reducers/classes/class/markAttendance.reducer";
+import recaptchaReducer from "./reducers/recaptcha.reducer";
 
 export const ConfigureStore = () => {
   const store = createStore(
@@ -28,6 +29,7 @@ export const ConfigureStore = () => {
       loginReducer: loginReducer,
       registerReducer: registerReducer,
       logoutReducer: logoutReducer,
+      reCAPTCHA: recaptchaReducer,
     }),
     applyMiddleware(thunk, logger)
   );

@@ -5,10 +5,6 @@ import Feedback from "./feedback";
 
 export default class index extends Component {
   render() {
-    return (
-      <div>
-        <Feedback />
-      </div>
-    );
+    return <Feedback />;
   }
 }

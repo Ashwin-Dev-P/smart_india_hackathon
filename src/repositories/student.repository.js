@@ -7,10 +7,25 @@ const StudentModel = mongoose.model("Student");
 
 const getStudentsRepository = async (class_id) => {
   const limit = 0;
-  const select = "name";
+  const select = "name days_present";
 
   const filter = {
     class: class_id,
+  };
+  const students = StudentModel.find(filter).limit(limit).select(select);
+
+  return students;
+};
+
+const getStudentsOfClassByDate = async (class_id, date) => {
+  const limit = 0;
+  const select = "days_present";
+
+  const filter = {
+    class: class_id,
+    date: {
+      $elemMatch: { days_present: date },
+    },
   };
   const students = StudentModel.find(filter).limit(limit).select(select);
 
@@ -69,10 +84,41 @@ const addStudentPresentDateRepository = async (_id, date) => {
   return result;
 };
 
+//used to mark absent for a student on a particular date
+const markAbsentForStudentRepository = async (student_id, date) => {
+  const select = "days_present";
+
+  const student = await StudentModel.findById(student_id).select(select);
+
+  const days_present = student.days_present;
+
+  //remove the date from the array
+  const index = days_present.indexOf(date);
+
+  //if not found , skip
+  if (index === -1) {
+    return true;
+  }
+
+  days_present.splice(index, 1);
+
+  const update = {
+    days_present,
+  };
+  const filter = {
+    _id: student_id,
+  };
+
+  const updated_student = await StudentModel.updateOne(filter, update);
+  return updated_student;
+};
+
 module.exports = {
   addStudentRepository,
   getStudentsRepository,
+  getStudentsOfClassByDate,
   getStudentAttendanceById,
   updateStudentPresentStatus,
   addStudentPresentDateRepository,
+  markAbsentForStudentRepository,
 };

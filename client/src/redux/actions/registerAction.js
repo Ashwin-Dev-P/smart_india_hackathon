@@ -22,6 +22,17 @@ const registerAction = (form_data) => {
       type: REGISTER_LOADING,
     });
 
+    const reCAPTCHA_token = form_data.reCAPTCHA_token;
+    if (!reCAPTCHA_token) {
+      await dispatch({
+        type: REGISTER_FAILED,
+        payload: {
+          error_message: "Please select the reCAPTCHA",
+        },
+      });
+      return;
+    }
+
     const url = backend_url + "/api/user";
 
     await axios

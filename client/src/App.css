@@ -10,6 +10,11 @@ header {
   background-color: #fff;
 }
 
+main {
+  margin-top: 2%;
+  margin-bottom: 2%;
+}
+
 nav {
   padding-left: 5%;
   padding-right: 5%;
@@ -37,6 +42,10 @@ main {
   background-color: #fafafa;
   margin-left: 3%;
   margin-right: 3%;
+}
+
+th {
+  padding: 1% !important;
 }
 
 .myBorder {
@@ -90,4 +99,42 @@ main {
 .class-crud-buttons-div {
   padding-top: 2%;
   padding-bottom: 2%;
+}
+
+.red-color {
+  color: red;
+}
+
+.green-color {
+  color: green;
+}
+
+.my-margin {
+  margin: 2.5%;
+}
+
+/* Scroll bar */
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+#attendance_table {
+  background-color: #fff;
 }
